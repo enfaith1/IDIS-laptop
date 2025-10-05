@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Search, Plus, ChevronLeft, ChevronRight, Settings, Bell, User } from 'lucide-react';
+import { Search, Plus, ChevronLeft, ChevronRight, User } from 'lucide-react';
 
 interface Tenant {
   id: number;
@@ -9,20 +9,22 @@ interface Tenant {
   phoneNumber: string;
   email: string;
   age: number | string;
+  address: string;
+  dateOfOccupancy: Date;
   status: 'Active' | 'Inactive' | string;
 }
 
 const mockTenants: Tenant[] = [
-  { id: 1, name: "Solis, Natalio Feliciano", tenantCode: "Tenant 01", roomNumber: "01", phoneNumber: "09221234567", email: "nsolis_2400000044@uic.edu.ph", age: 20, status: "Active" },
-  { id: 2, name: "Dela Cruz, Juan", tenantCode: "Tenant 02", roomNumber: "02", phoneNumber: "Cell Text", email: "Cell Text", age: "Cell Text", status: "Inactive" },
-  { id: 3, name: "Dela Cruz, Juan", tenantCode: "Tenant 03", roomNumber: "03", phoneNumber: "Cell Text", email: "Cell Text", age: "Cell Text", status: "Inactive" },
-  { id: 4, name: "Dela Cruz, Juan", tenantCode: "Tenant 04", roomNumber: "04", phoneNumber: "Cell Text", email: "Cell Text", age: "Cell Text", status: "Inactive" },
-  { id: 5, name: "Dela Cruz, Juan", tenantCode: "Tenant 05", roomNumber: "05", phoneNumber: "Cell Text", email: "Cell Text", age: "Cell Text", status: "Inactive" },
-  { id: 6, name: "Dela Cruz, Juan", tenantCode: "Tenant 06", roomNumber: "06", phoneNumber: "Cell Text", email: "Cell Text", age: "Cell Text", status: "Inactive" },
-  { id: 7, name: "Dela Cruz, Juan", tenantCode: "Tenant 07", roomNumber: "07", phoneNumber: "Cell Text", email: "Cell Text", age: "Cell Text", status: "Inactive" },
-  { id: 8, name: "Dela Cruz, Juan", tenantCode: "Tenant 08", roomNumber: "08", phoneNumber: "Cell Text", email: "Cell Text", age: "Cell Text", status: "Inactive" },
-  { id: 9, name: "Dela Cruz, Juan", tenantCode: "Tenant 09", roomNumber: "09", phoneNumber: "Cell Text", email: "Cell Text", age: "Cell Text", status: "Inactive" },
-  { id: 10, name: "Dela Cruz, Juan", tenantCode: "Tenant 10", roomNumber: "10", phoneNumber: "Cell Text", email: "Cell Text", age: "Cell Text", status: "Inactive" }
+  { id: 1, name: "Solis, Natalio Feliciano", tenantCode: "Tenant 01", roomNumber: "01", phoneNumber: "09221234567", email: "nsolis_2400000044@uic.edu.ph", age: 20, address: "", dateOfOccupancy: new Date(), status: "Active" },
+  { id: 2, name: "Dela Cruz, Juan", tenantCode: "Tenant 02", roomNumber: "02", phoneNumber: "Cell Text", email: "Cell Text", age: "Cell Text", address: "", dateOfOccupancy: new Date(), status: "Inactive" },
+  { id: 3, name: "Dela Cruz, Juan", tenantCode: "Tenant 03", roomNumber: "03", phoneNumber: "Cell Text", email: "Cell Text", age: "Cell Text", address: "", dateOfOccupancy: new Date(), status: "Inactive" },
+  { id: 4, name: "Dela Cruz, Juan", tenantCode: "Tenant 04", roomNumber: "04", phoneNumber: "Cell Text", email: "Cell Text", age: "Cell Text", address: "", dateOfOccupancy: new Date(), status: "Inactive" },
+  { id: 5, name: "Dela Cruz, Juan", tenantCode: "Tenant 05", roomNumber: "05", phoneNumber: "Cell Text", email: "Cell Text", age: "Cell Text", address: "", dateOfOccupancy: new Date(), status: "Inactive" },
+  { id: 6, name: "Dela Cruz, Juan", tenantCode: "Tenant 06", roomNumber: "06", phoneNumber: "Cell Text", email: "Cell Text", age: "Cell Text", address: "", dateOfOccupancy: new Date(), status: "Inactive" },
+  { id: 7, name: "Dela Cruz, Juan", tenantCode: "Tenant 07", roomNumber: "07", phoneNumber: "Cell Text", email: "Cell Text", age: "Cell Text", address: "", dateOfOccupancy: new Date(), status: "Inactive" },
+  { id: 8, name: "Dela Cruz, Juan", tenantCode: "Tenant 08", roomNumber: "08", phoneNumber: "Cell Text", email: "Cell Text", age: "Cell Text", address: "", dateOfOccupancy: new Date(), status: "Inactive" },
+  { id: 9, name: "Dela Cruz, Juan", tenantCode: "Tenant 09", roomNumber: "09", phoneNumber: "Cell Text", email: "Cell Text", age: "Cell Text", address: "", dateOfOccupancy: new Date(), status: "Inactive" },
+  { id: 10, name: "Dela Cruz, Juan", tenantCode: "Tenant 10", roomNumber: "10", phoneNumber: "Cell Text", email: "Cell Text", age: "Cell Text", address: "", dateOfOccupancy: new Date(), status: "Inactive" }
 ];
 
 function Payments() {
@@ -65,10 +67,11 @@ function Tenants() {
   const [tenants, setTenants] = useState<Tenant[]>(mockTenants);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [sortField, setSortField] = useState<keyof Tenant>('name');
+  const [sortField, setSortField] = useState<keyof Tenant>('roomNumber');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
   const [activeTab, setActiveTab] = useState<'Overview' | 'Add Tenant'>('Overview');
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const [showResetConfirm, setShowResetConfirm] = useState(false);
   const itemsPerPage = 10;
 
   const [newTenant, setNewTenant] = useState<Partial<Tenant>>({
@@ -78,6 +81,8 @@ function Tenants() {
     phoneNumber: '',
     email: '',
     age: '',
+    address: '',
+    dateOfOccupancy: undefined,
     status: 'Active'
   });
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
@@ -105,8 +110,8 @@ function Tenants() {
     arr.sort((a, b) => {
       const aVal = a[sortField];
       const bVal = b[sortField];
-      const aNum = typeof aVal === 'number' ? (aVal as number) : Number(aVal as any);
-      const bNum = typeof bVal === 'number' ? (bVal as number) : Number(bVal as any);
+      const aNum = typeof aVal === 'number' ? aVal : Number(aVal);
+      const bNum = typeof bVal === 'number' ? bVal : Number(bVal);
 
       if (!Number.isNaN(aNum) && !Number.isNaN(bNum)) {
         return sortDirection === 'asc' ? aNum - bNum : bNum - aNum;
@@ -137,7 +142,7 @@ function Tenants() {
     const pages: number[] = [];
     const maxVisiblePages = 5;
     let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
-    let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+    const endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
     if (endPage - startPage + 1 < maxVisiblePages) {
       startPage = Math.max(1, endPage - maxVisiblePages + 1);
     }
@@ -146,7 +151,11 @@ function Tenants() {
   };
 
   const handleInputChange = (key: keyof Tenant, value: string) => {
-    setNewTenant(prev => ({ ...prev, [key]: value }));
+    if (key === 'dateOfOccupancy') {
+      setNewTenant(prev => ({ ...prev, [key]: value ? new Date(value) : undefined }));
+    } else {
+      setNewTenant(prev => ({ ...prev, [key]: value }));
+    }
     setFormErrors(prev => ({ ...prev, [key]: '' }));
   };
 
@@ -170,9 +179,13 @@ function Tenants() {
     return Object.keys(errors).length === 0;
   };
 
-  const handleResetForm = () => {
-    setNewTenant({ name: '', tenantCode: '', roomNumber: '', phoneNumber: '', email: '', age: '', status: 'Active' });
+  const performReset = () => {
+    setNewTenant({ name: '', tenantCode: '', roomNumber: '', phoneNumber: '', email: '', age: '', address: '', dateOfOccupancy: undefined, status: 'Active' });
     setFormErrors({});
+  };
+
+  const handleResetForm = () => {
+    setShowResetConfirm(true);
   };
 
   const handleAddTenant = (e?: React.FormEvent) => {
@@ -188,6 +201,8 @@ function Tenants() {
       phoneNumber: String(newTenant.phoneNumber).trim(),
       email: String(newTenant.email).trim(),
       age: isNaN(Number(newTenant.age)) ? String(newTenant.age) : Number(newTenant.age),
+      address: String(newTenant.address || '').trim(),
+      dateOfOccupancy: newTenant.dateOfOccupancy || new Date(),
       status: (newTenant.status as Tenant['status']) || 'Active'
     };
 
@@ -270,20 +285,19 @@ function Tenants() {
             <table className="w-full">
               <thead className="bg-gray-50 border-b border-gray-200">
                 <tr>
-                  <th className="text-left py-3 px-6 font-medium text-gray-500 cursor-pointer hover:text-gray-700" onClick={() => handleSort('name')}>
-                    <div className="flex items-center space-x-1">
-                      <span>Tenants</span>
-                      <span className="text-xs">{sortField === 'name' ? (sortDirection === 'asc' ? '↑' : '↓') : '↕'}</span>
-                    </div>
-                  </th>
                   <th className="text-left py-3 px-6 font-medium text-gray-500 cursor-pointer hover:text-gray-700" onClick={() => handleSort('roomNumber')}>
                     <div className="flex items-center space-x-1">
                       <span>Room Number</span>
                       <span className="text-xs">{sortField === 'roomNumber' ? (sortDirection === 'asc' ? '↑' : '↓') : '↕'}</span>
                     </div>
                   </th>
+                  <th className="text-left py-3 px-6 font-medium text-gray-500 cursor-pointer hover:text-gray-700" onClick={() => handleSort('name')}>
+                    <div className="flex items-center space-x-1">
+                      <span>Tenants</span>
+                      <span className="text-xs">{sortField === 'name' ? (sortDirection === 'asc' ? '↑' : '↓') : '↕'}</span>
+                    </div>
+                  </th>
                   <th className="text-left py-3 px-6 font-medium text-gray-500">Phone Number</th>
-                  <th className="text-left py-3 px-6 font-medium text-gray-500">Email</th>
                   <th className="text-left py-3 px-6 font-medium text-gray-500">Age</th>
                   <th className="text-left py-3 px-6 font-medium text-gray-500">Status</th>
                 </tr>
@@ -291,6 +305,7 @@ function Tenants() {
               <tbody className="divide-y divide-gray-200">
                 {currentTenants.map((tenant) => (
                   <tr key={tenant.id} className="hover:bg-gray-50">
+                    <td className="py-4 px-6 text-gray-900">{tenant.roomNumber}</td>
                     <td className="py-4 px-6">
                       <div className="flex items-center space-x-3">
                         <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center"><User className="h-4 w-4 text-gray-500" /></div>
@@ -300,9 +315,7 @@ function Tenants() {
                         </div>
                       </div>
                     </td>
-                    <td className="py-4 px-6 text-gray-900">{tenant.roomNumber}</td>
                     <td className="py-4 px-6 text-gray-900">{tenant.phoneNumber}</td>
-                    <td className="py-4 px-6 text-gray-900">{tenant.email}</td>
                     <td className="py-4 px-6 text-gray-900">{tenant.age}</td>
                     <td className="py-4 px-6">
                       <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${tenant.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
@@ -390,6 +403,16 @@ function Tenants() {
               </div>
 
               <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Address</label>
+                <input type="text" value={newTenant.address ?? ''} onChange={(e) => handleInputChange('address', e.target.value)} placeholder="Enter address" className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Date of Occupancy</label>
+                <input type="date" value={newTenant.dateOfOccupancy ? newTenant.dateOfOccupancy.toISOString().split('T')[0] : ''} onChange={(e) => handleInputChange('dateOfOccupancy', e.target.value)} className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              </div>
+
+              <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Status <span className="text-red-500">*</span></label>
                 <select value={newTenant.status ?? 'Active'} onChange={(e) => handleInputChange('status', e.target.value)} className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
                   <option value="Active">Active</option>
@@ -423,15 +446,30 @@ function Tenants() {
           </div>
         </div>
       )}
+
+      {showResetConfirm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full mx-4">
+            <h3 className="text-lg font-semibold mb-4">Confirm Reset</h3>
+            <p className="text-gray-600 mb-6">Are you sure you want to reset the form? This will clear all entered data.</p>
+            <div className="flex justify-end space-x-3">
+              <button onClick={() => setShowResetConfirm(false)} className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">Cancel</button>
+              <button onClick={() => { performReset(); setShowResetConfirm(false); }} className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600">Confirm</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
+type TabId = 'tenants' | 'payments' | 'notifications' | 'settings';
+
 export default function Dashboard() {
-  const [activeTab, setActiveTab] = useState<'tenants' | 'payments' | 'notifications' | 'settings'>('tenants');
+  const [activeTab, setActiveTab] = useState<TabId>('tenants');
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const tabs = [
+  const tabs: { id: TabId; label: string; icon: string }[] = [
     { id: 'tenants', label: 'Tenants', icon: '' },
     { id: 'payments', label: 'Payments', icon: '' },
     { id: 'notifications', label: 'Notifications', icon: '' },
@@ -448,8 +486,8 @@ export default function Dashboard() {
     }
   };
 
-  const handleTabClick = (tabId: string) => {
-    setActiveTab(tabId as any);
+  const handleTabClick = (tabId: TabId) => {
+    setActiveTab(tabId);
     setSidebarOpen(false);
   };
 
@@ -492,7 +530,7 @@ export default function Dashboard() {
           </nav>
         </div>
 
-        <div className="absolute bottom-0 w-64 p-6 border-t border-[#E5E7EB]">
+        <div className="sticky bottom-0 w-64 p-6 border-t border-[#E5E7EB] bg-[#FFFFFF]">
           <button onClick={() => window.location.href = '/'} className="w-full px-4 py-2 text-left text-gray-700 hover:bg-[#F2F4F8] rounded-lg transition-colors duration-200 flex items-center space-x-3">
             <span></span><span>Logout</span>
           </button>
