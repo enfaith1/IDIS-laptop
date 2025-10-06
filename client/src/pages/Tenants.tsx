@@ -4,6 +4,10 @@ import { Search, Plus, ChevronLeft, ChevronRight, User } from 'lucide-react';
 interface Tenant {
   id: number;
   name: string;
+  firstName: string;
+  middleName: string;
+  surname: string;
+  extension: string;
   tenantCode: string;
   roomNumber: string;
   phoneNumber: string;
@@ -15,16 +19,16 @@ interface Tenant {
 }
 
 const mockTenants: Tenant[] = [
-  { id: 1, name: "Solis, Natalio Feliciano", tenantCode: "Tenant 01", roomNumber: "01", phoneNumber: "09221234567", email: "nsolis_2400000044@uic.edu.ph", age: 20, address: "", dateOfOccupancy: new Date(), status: "Active" },
-  { id: 2, name: "Dela Cruz, Juan", tenantCode: "Tenant 02", roomNumber: "02", phoneNumber: "Cell Text", email: "Cell Text", age: "Cell Text", address: "", dateOfOccupancy: new Date(), status: "Inactive" },
-  { id: 3, name: "Dela Cruz, Juan", tenantCode: "Tenant 03", roomNumber: "03", phoneNumber: "Cell Text", email: "Cell Text", age: "Cell Text", address: "", dateOfOccupancy: new Date(), status: "Inactive" },
-  { id: 4, name: "Dela Cruz, Juan", tenantCode: "Tenant 04", roomNumber: "04", phoneNumber: "Cell Text", email: "Cell Text", age: "Cell Text", address: "", dateOfOccupancy: new Date(), status: "Inactive" },
-  { id: 5, name: "Dela Cruz, Juan", tenantCode: "Tenant 05", roomNumber: "05", phoneNumber: "Cell Text", email: "Cell Text", age: "Cell Text", address: "", dateOfOccupancy: new Date(), status: "Inactive" },
-  { id: 6, name: "Dela Cruz, Juan", tenantCode: "Tenant 06", roomNumber: "06", phoneNumber: "Cell Text", email: "Cell Text", age: "Cell Text", address: "", dateOfOccupancy: new Date(), status: "Inactive" },
-  { id: 7, name: "Dela Cruz, Juan", tenantCode: "Tenant 07", roomNumber: "07", phoneNumber: "Cell Text", email: "Cell Text", age: "Cell Text", address: "", dateOfOccupancy: new Date(), status: "Inactive" },
-  { id: 8, name: "Dela Cruz, Juan", tenantCode: "Tenant 08", roomNumber: "08", phoneNumber: "Cell Text", email: "Cell Text", age: "Cell Text", address: "", dateOfOccupancy: new Date(), status: "Inactive" },
-  { id: 9, name: "Dela Cruz, Juan", tenantCode: "Tenant 09", roomNumber: "09", phoneNumber: "Cell Text", email: "Cell Text", age: "Cell Text", address: "", dateOfOccupancy: new Date(), status: "Inactive" },
-  { id: 10, name: "Dela Cruz, Juan", tenantCode: "Tenant 10", roomNumber: "10", phoneNumber: "Cell Text", email: "Cell Text", age: "Cell Text", address: "", dateOfOccupancy: new Date(), status: "Inactive" }
+  { id: 1, name: "Solis, Natalio Feliciano", firstName: "Natalio", middleName: "Feliciano", surname: "Solis", extension: "", tenantCode: "Tenant 01", roomNumber: "01", phoneNumber: "09221234567", email: "nsolis_2400000044@uic.edu.ph", age: 20, address: "", dateOfOccupancy: new Date(), status: "Active" },
+  { id: 2, name: "Dela Cruz, Juan", firstName: "Juan", middleName: "", surname: "Dela Cruz", extension: "", tenantCode: "Tenant 02", roomNumber: "02", phoneNumber: "Cell Text", email: "Cell Text", age: "Cell Text", address: "", dateOfOccupancy: new Date(), status: "Inactive" },
+  { id: 3, name: "Dela Cruz, Juan", firstName: "Juan", middleName: "", surname: "Dela Cruz", extension: "", tenantCode: "Tenant 03", roomNumber: "03", phoneNumber: "Cell Text", email: "Cell Text", age: "Cell Text", address: "", dateOfOccupancy: new Date(), status: "Inactive" },
+  { id: 4, name: "Dela Cruz, Juan", firstName: "Juan", middleName: "", surname: "Dela Cruz", extension: "", tenantCode: "Tenant 04", roomNumber: "04", phoneNumber: "Cell Text", email: "Cell Text", age: "Cell Text", address: "", dateOfOccupancy: new Date(), status: "Inactive" },
+  { id: 5, name: "Dela Cruz, Juan", firstName: "Juan", middleName: "", surname: "Dela Cruz", extension: "", tenantCode: "Tenant 05", roomNumber: "05", phoneNumber: "Cell Text", email: "Cell Text", age: "Cell Text", address: "", dateOfOccupancy: new Date(), status: "Inactive" },
+  { id: 6, name: "Dela Cruz, Juan", firstName: "Juan", middleName: "", surname: "Dela Cruz", extension: "", tenantCode: "Tenant 06", roomNumber: "06", phoneNumber: "Cell Text", email: "Cell Text", age: "Cell Text", address: "", dateOfOccupancy: new Date(), status: "Inactive" },
+  { id: 7, name: "Dela Cruz, Juan", firstName: "Juan", middleName: "", surname: "Dela Cruz", extension: "", tenantCode: "Tenant 07", roomNumber: "07", phoneNumber: "Cell Text", email: "Cell Text", age: "Cell Text", address: "", dateOfOccupancy: new Date(), status: "Inactive" },
+  { id: 8, name: "Dela Cruz, Juan", firstName: "Juan", middleName: "", surname: "Dela Cruz", extension: "", tenantCode: "Tenant 08", roomNumber: "08", phoneNumber: "Cell Text", email: "Cell Text", age: "Cell Text", address: "", dateOfOccupancy: new Date(), status: "Inactive" },
+  { id: 9, name: "Dela Cruz, Juan", firstName: "Juan", middleName: "", surname: "Dela Cruz", extension: "", tenantCode: "Tenant 09", roomNumber: "09", phoneNumber: "Cell Text", email: "Cell Text", age: "Cell Text", address: "", dateOfOccupancy: new Date(), status: "Inactive" },
+  { id: 10, name: "Dela Cruz, Juan", firstName: "Juan", middleName: "", surname: "Dela Cruz", extension: "", tenantCode: "Tenant 10", roomNumber: "10", phoneNumber: "Cell Text", email: "Cell Text", age: "Cell Text", address: "", dateOfOccupancy: new Date(), status: "Inactive" }
 ];
 
 function Payments() {
@@ -75,7 +79,10 @@ function Tenants() {
   const itemsPerPage = 10;
 
   const [newTenant, setNewTenant] = useState<Partial<Tenant>>({
-    name: '',
+    surname: '',
+    firstName: '',
+    middleName: '',
+    extension: '',
     tenantCode: '',
     roomNumber: '',
     phoneNumber: '',
@@ -161,7 +168,8 @@ function Tenants() {
 
   const validateForm = (): boolean => {
     const errors: Record<string, string> = {};
-    if (!newTenant.name || !String(newTenant.name).trim()) errors.name = 'Full name is required.';
+    if (!newTenant.surname || !String(newTenant.surname).trim()) errors.surname = 'Surname is required.';
+    if (!newTenant.firstName || !String(newTenant.firstName).trim()) errors.firstName = 'First name is required.';
     if (!newTenant.roomNumber || !String(newTenant.roomNumber).trim()) errors.roomNumber = 'Room number is required.';
     if (!newTenant.phoneNumber || !String(newTenant.phoneNumber).trim()) errors.phoneNumber = 'Phone number is required.';
     if (!newTenant.email || !String(newTenant.email).trim()) errors.email = 'Email is required.';
@@ -172,15 +180,15 @@ function Tenants() {
     const room = String(newTenant.roomNumber);
     if (tenants.some(t => String(t.roomNumber) === room)) errors.roomNumber = 'Room number already taken.';
 
-    const ageNum = Number(newTenant.age);
-    if (Number.isNaN(ageNum) || ageNum < 16 || ageNum > 65) errors.age = 'Age must be a number between 16 and 65.';
+    // const ageNum = Number(newTenant.age);
+    // if (Number.isNaN(ageNum) || ageNum < 16 || ageNum > 65) errors.age = 'Age must be a number between 16 and 65.';
 
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   };
 
   const performReset = () => {
-    setNewTenant({ name: '', tenantCode: '', roomNumber: '', phoneNumber: '', email: '', age: '', address: '', dateOfOccupancy: undefined, status: 'Active' });
+    setNewTenant({ surname: '', firstName: '', middleName: '', extension: '', tenantCode: '', roomNumber: '', phoneNumber: '', email: '', age: '', address: '', dateOfOccupancy: undefined, status: 'Active' });
     setFormErrors({});
   };
 
@@ -193,9 +201,14 @@ function Tenants() {
     if (!validateForm()) return;
 
     const maxId = tenants.reduce((m, t) => Math.max(m, t.id), 0);
+    const name = `${String(newTenant.surname).trim()}, ${String(newTenant.firstName).trim()} ${String(newTenant.middleName || '').trim()} ${String(newTenant.extension || '').trim()}`.trim();
     const created: Tenant = {
       id: maxId + 1,
-      name: String(newTenant.name).trim(),
+      name,
+      firstName: String(newTenant.firstName).trim(),
+      middleName: String(newTenant.middleName || '').trim(),
+      surname: String(newTenant.surname).trim(),
+      extension: String(newTenant.extension || '').trim(),
       tenantCode: newTenant.tenantCode && String(newTenant.tenantCode).trim() ? String(newTenant.tenantCode).trim() : `Tenant ${maxId + 1}`,
       roomNumber: String(newTenant.roomNumber).trim(),
       phoneNumber: String(newTenant.phoneNumber).trim(),
@@ -373,9 +386,25 @@ function Tenants() {
           <form onSubmit={handleAddTenant} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Full Name <span className="text-red-500">*</span></label>
-                <input type="text" value={newTenant.name ?? ''} onChange={(e) => handleInputChange('name', e.target.value)} placeholder="Enter full name" className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${formErrors.name ? 'border-red-500' : 'border-gray-300'}`} />
-                {formErrors.name && <p className="mt-1 text-sm text-red-500">{formErrors.name}</p>}
+                <label className="block text-sm font-medium text-gray-700 mb-2">Surname <span className="text-red-500">*</span></label>
+                <input type="text" value={newTenant.surname ?? ''} onChange={(e) => handleInputChange('surname', e.target.value)} placeholder="Enter surname" className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${formErrors.surname ? 'border-red-500' : 'border-gray-300'}`} />
+                {formErrors.surname && <p className="mt-1 text-sm text-red-500">{formErrors.surname}</p>}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">First Name <span className="text-red-500">*</span></label>
+                <input type="text" value={newTenant.firstName ?? ''} onChange={(e) => handleInputChange('firstName', e.target.value)} placeholder="Enter first name" className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${formErrors.firstName ? 'border-red-500' : 'border-gray-300'}`} />
+                {formErrors.firstName && <p className="mt-1 text-sm text-red-500">{formErrors.firstName}</p>}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Middle Name</label>
+                <input type="text" value={newTenant.middleName ?? ''} onChange={(e) => handleInputChange('middleName', e.target.value)} placeholder="Enter middle name" className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Extension</label>
+                <input type="text" value={newTenant.extension ?? ''} onChange={(e) => handleInputChange('extension', e.target.value)} placeholder="Enter extension" className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
               </div>
 
               <div>
