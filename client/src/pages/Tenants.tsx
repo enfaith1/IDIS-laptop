@@ -385,27 +385,27 @@ function Tenants() {
 
           <form onSubmit={handleAddTenant} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Surname <span className="text-red-500">*</span></label>
-                <input type="text" value={newTenant.surname ?? ''} onChange={(e) => handleInputChange('surname', e.target.value)} placeholder="Enter surname" className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${formErrors.surname ? 'border-red-500' : 'border-gray-300'}`} />
-                {formErrors.surname && <p className="mt-1 text-sm text-red-500">{formErrors.surname}</p>}
-              </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">First Name <span className="text-red-500">*</span></label>
+            <input type="text" value={newTenant.firstName ?? ''} onChange={(e) => handleInputChange('firstName', e.target.value)} placeholder="Enter first name" className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${formErrors.firstName ? 'border-red-500' : 'border-gray-300'}`} />
+            {formErrors.firstName && <p className="mt-1 text-sm text-red-500">{formErrors.firstName}</p>}
+          </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">First Name <span className="text-red-500">*</span></label>
-                <input type="text" value={newTenant.firstName ?? ''} onChange={(e) => handleInputChange('firstName', e.target.value)} placeholder="Enter first name" className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${formErrors.firstName ? 'border-red-500' : 'border-gray-300'}`} />
-                {formErrors.firstName && <p className="mt-1 text-sm text-red-500">{formErrors.firstName}</p>}
-              </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Middle Name</label>
+            <input type="text" value={newTenant.middleName ?? ''} onChange={(e) => handleInputChange('middleName', e.target.value)} placeholder="Enter middle name" className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Middle Name</label>
-                <input type="text" value={newTenant.middleName ?? ''} onChange={(e) => handleInputChange('middleName', e.target.value)} placeholder="Enter middle name" className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
-              </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Surname <span className="text-red-500">*</span></label>
+            <input type="text" value={newTenant.surname ?? ''} onChange={(e) => handleInputChange('surname', e.target.value)} placeholder="Enter surname" className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${formErrors.surname ? 'border-red-500' : 'border-gray-300'}`} />
+            {formErrors.surname && <p className="mt-1 text-sm text-red-500">{formErrors.surname}</p>}
+          </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Extension</label>
-                <input type="text" value={newTenant.extension ?? ''} onChange={(e) => handleInputChange('extension', e.target.value)} placeholder="Enter extension" className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
-              </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Extension</label>
+            <input type="text" value={newTenant.extension ?? ''} onChange={(e) => handleInputChange('extension', e.target.value)} placeholder="Enter extension" className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Room Number <span className="text-red-500">*</span></label>
